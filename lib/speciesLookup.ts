@@ -1,4 +1,6 @@
-import { gen } from '@/lib/calc';
+import { Dex } from '@pkmn/dex';
+
+const dex = Dex.forGen(9);
 
 const artworkCache = new Map<string, string>();
 const itemSpriteCache = new Map<string, string>();
@@ -31,6 +33,32 @@ function itemNameToSlug(itemName: string): string {
     .replace(/-+/g, '-');
 }
 
+function getShowdownSlugCandidates(speciesName: string): string[] {
+  const slugs = new Set<string>();
+  const species = dex.species.get(toId(speciesName));
+  if (species?.id) slugs.add(species.id);
+  slugs.add(showdownSlugFromName(speciesName));
+  slugs.add(normalizeSpeciesName(speciesName));
+  return [...slugs];
+}
+
+export function getPokemonSpriteCandidates(speciesName: string): string[] {
+  const urls: string[] = [];
+  const species = dex.species.get(toId(speciesName));
+
+  if (species?.num) {
+    urls.push(
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${species.num}.png`,
+    );
+  }
+
+  for (const slug of getShowdownSlugCandidates(speciesName)) {
+    urls.push(`https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`);
+  }
+
+  return [...new Set(urls)];
+}
+
 function getItemSpriteCandidates(itemName: string): string[] {
   const hyphenSlug = itemNameToSlug(itemName);
   const compactSlug = toId(itemName);
@@ -53,62 +81,19 @@ function imageLoads(url: string): Promise<boolean> {
   });
 }
 
-async function urlExists(url: string): Promise<boolean> {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-function getShowdownSpriteCandidates(speciesName: string): string[] {
-  const slugs = new Set<string>();
-  const species = gen.species.get(toId(speciesName) as never);
-  if (species?.id) slugs.add(species.id);
-  slugs.add(showdownSlugFromName(speciesName));
-  slugs.add(normalizeSpeciesName(speciesName));
-
-  return [...slugs].map(
-    (slug) => `https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`,
-  );
-}
-
-async function getShowdownSpriteUrl(speciesName: string): Promise<string> {
-  for (const url of getShowdownSpriteCandidates(speciesName)) {
-    if (await urlExists(url)) return url;
-  }
-  return '';
-}
-
 export async function getPokemonArtworkUrl(speciesName: string): Promise<string> {
   const cached = artworkCache.get(speciesName);
   if (cached !== undefined) return cached;
 
-  const slug = normalizeSpeciesName(speciesName);
-  try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
-    if (response.ok) {
-      const data = await response.json();
-      const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`;
+  for (const url of getPokemonSpriteCandidates(speciesName)) {
+    if (await imageLoads(url)) {
       artworkCache.set(speciesName, url);
       return url;
     }
-
-    const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${slug}`);
-    if (speciesResponse.ok) {
-      const speciesData = await speciesResponse.json();
-      const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${speciesData.id}.png`;
-      artworkCache.set(speciesName, url);
-      return url;
-    }
-  } catch {
-    // fall through to Showdown sprites (CAP / custom species)
   }
 
-  const showdownUrl = await getShowdownSpriteUrl(speciesName);
-  artworkCache.set(speciesName, showdownUrl);
-  return showdownUrl;
+  artworkCache.set(speciesName, '');
+  return '';
 }
 
 /** Resolve item artwork via PokeAPI, Showdown, then Serebii fallbacks. */

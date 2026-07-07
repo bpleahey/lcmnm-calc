@@ -1,7 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getItemSpriteUrl, getPokemonArtworkUrl, getSpeciesMonogram } from '@/lib/speciesLookup';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  getItemSpriteUrl,
+  getPokemonSpriteCandidates,
+  getSpeciesMonogram,
+} from '@/lib/speciesLookup';
 
 interface PokemonSpriteProps {
   species: string;
@@ -9,20 +13,48 @@ interface PokemonSpriteProps {
   compact?: boolean;
 }
 
+function imageLoads(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve(true);
+    image.onerror = () => resolve(false);
+    image.src = url;
+  });
+}
+
 export function PokemonSprite({ species, item, compact = false }: PokemonSpriteProps) {
   const [spriteUrl, setSpriteUrl] = useState<string | null>(null);
   const [itemSpriteUrl, setItemSpriteUrl] = useState<string | null>(null);
+  const spriteCandidates = useMemo(() => getPokemonSpriteCandidates(species), [species]);
 
   useEffect(() => {
     let active = true;
     setSpriteUrl(null);
-    getPokemonArtworkUrl(species).then((url) => {
-      if (active) setSpriteUrl(url);
-    });
+
+    (async () => {
+      for (const url of spriteCandidates) {
+        if (!active) return;
+        if (await imageLoads(url)) {
+          if (active) setSpriteUrl(url);
+          return;
+        }
+      }
+      if (active) setSpriteUrl('');
+    })();
+
     return () => {
       active = false;
     };
-  }, [species]);
+  }, [species, spriteCandidates]);
+
+  const tryNextSprite = () => {
+    setSpriteUrl((current) => {
+      if (!current) return '';
+      const index = spriteCandidates.indexOf(current);
+      const next = index >= 0 ? spriteCandidates[index + 1] : undefined;
+      return next ?? '';
+    });
+  };
 
   useEffect(() => {
     let active = true;
@@ -55,7 +87,12 @@ export function PokemonSprite({ species, item, compact = false }: PokemonSpriteP
           <div className={`${imgClass} animate-pulse rounded-full bg-panel-light`} />
         ) : spriteUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={spriteUrl} alt={species} className={`${imgClass} object-contain`} />
+          <img
+            src={spriteUrl}
+            alt={species}
+            className={`${imgClass} object-contain`}
+            onError={tryNextSprite}
+          />
         ) : (
           <span
             className={`flex ${imgClass} items-center justify-center text-center font-semibold text-gold-light ${
