@@ -10,7 +10,7 @@ import type { NatureName, StatID, StatusName, StatsTable } from '@/lib/types';
 import { LC_LEVEL } from '@/lib/constants';
 import { applyMixAndMega, isAutoTransformItem, isToggleMegaStone } from '@/lib/mixMega';
 import { formatDamageRollDisplay, type DamageRollLine } from '@/lib/rolls';
-import { getDisplayedStats, mergeSwitchInBoosts } from '@/lib/displayStats';
+import { getDisplayedStats, mergeSwitchInBoosts, type DisplayedStatsResult } from '@/lib/displayStats';
 import type { PokemonSet } from '@/data/suggested-sets';
 
 export const gen: Generation = Generations.get(9);
@@ -233,12 +233,24 @@ export function calcMoveDamage(
 }
 
 export function getCalculatedStats(state: PokemonState): StatsTable {
-  if (!isResolvableSpecies(state.species)) return EMPTY_STATS;
+  return getDisplayedStatsForState(state).stats;
+}
+
+export function getDisplayedStatsForState(state: PokemonState): DisplayedStatsResult {
+  if (!isResolvableSpecies(state.species)) {
+    return {
+      stats: EMPTY_STATS,
+      itemModified: {},
+    };
+  }
   try {
     const pokemon = buildPokemon(state);
     return getDisplayedStats(gen, pokemon, state);
   } catch {
-    return EMPTY_STATS;
+    return {
+      stats: EMPTY_STATS,
+      itemModified: {},
+    };
   }
 }
 

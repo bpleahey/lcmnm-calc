@@ -10,6 +10,11 @@ import {
 
 const BATTLE_STATS: StatID[] = ['atk', 'def', 'spa', 'spd', 'spe'];
 
+export interface DisplayedStatsResult {
+  stats: StatsTable;
+  itemModified: Partial<Record<StatID, boolean>>;
+}
+
 function toId(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
@@ -23,6 +28,7 @@ function applyDefensiveItemModifiers(
   pokemon: Pokemon,
   speciesName: string,
   stats: StatsTable,
+  itemModified: Partial<Record<StatID, boolean>>,
 ): void {
   const species = gen.species.get(toId(speciesName) as never);
 
@@ -30,12 +36,18 @@ function applyDefensiveItemModifiers(
     pokemon.hasItem('Eviolite') &&
     (speciesName === 'Dipplin' || species?.nfe)
   ) {
-    stats.def = applyItemStatModifier(stats.def, 6144);
-    stats.spd = applyItemStatModifier(stats.spd, 6144);
+    const nextDef = applyItemStatModifier(stats.def, 6144);
+    const nextSpd = applyItemStatModifier(stats.spd, 6144);
+    if (nextDef !== stats.def) itemModified.def = true;
+    if (nextSpd !== stats.spd) itemModified.spd = true;
+    stats.def = nextDef;
+    stats.spd = nextSpd;
   }
 
   if (pokemon.hasItem('Assault Vest')) {
-    stats.spd = applyItemStatModifier(stats.spd, 6144);
+    const nextSpd = applyItemStatModifier(stats.spd, 6144);
+    if (nextSpd !== stats.spd) itemModified.spd = true;
+    stats.spd = nextSpd;
   }
 }
 
@@ -44,8 +56,13 @@ export function getDisplayedStats(
   gen: Generation,
   pokemon: Pokemon,
   state: PokemonState,
-): StatsTable {
+): DisplayedStatsResult {
   const field = new Field({ gameType: 'Singles' });
+  const itemModified: Partial<Record<StatID, boolean>> = {};
+
+  const boostedSpe = getModifiedStat(pokemon.rawStats.spe, state.boosts.spe ?? 0, gen);
+  const finalSpe = getFinalSpeed(gen, pokemon, field, field.attackerSide);
+  if (finalSpe !== boostedSpe) itemModified.spe = true;
 
   const stats: StatsTable = {
     hp: pokemon.rawStats.hp,
@@ -53,11 +70,11 @@ export function getDisplayedStats(
     def: getModifiedStat(pokemon.rawStats.def, state.boosts.def ?? 0, gen),
     spa: getModifiedStat(pokemon.rawStats.spa, state.boosts.spa ?? 0, gen),
     spd: getModifiedStat(pokemon.rawStats.spd, state.boosts.spd ?? 0, gen),
-    spe: getFinalSpeed(gen, pokemon, field, field.attackerSide),
+    spe: finalSpe,
   };
 
-  applyDefensiveItemModifiers(gen, pokemon, state.species, stats);
-  return stats;
+  applyDefensiveItemModifiers(gen, pokemon, state.species, stats, itemModified);
+  return { stats, itemModified };
 }
 
 export function getSwitchInBoosts(ability: string): Partial<StatsTable> {

@@ -24,6 +24,7 @@ interface StatRowProps {
   label: string;
   state: PokemonState;
   finalStat: number;
+  itemModified?: boolean;
   evTotal: number;
   onEvChange: (stat: StatID, value: number) => void;
   onIvChange: (stat: StatID, value: number) => void;
@@ -35,6 +36,7 @@ export function StatRow({
   label,
   state,
   finalStat,
+  itemModified = false,
   evTotal,
   onEvChange,
   onIvChange,
@@ -65,7 +67,7 @@ export function StatRow({
         className="stat-range accent-gold"
         title="EVs"
       />
-      <span className="stat-value">{finalStat}</span>
+      <span className={`stat-value ${itemModified ? 'stat-value-modified' : ''}`}>{finalStat}</span>
       <input
         type="number"
         min={0}

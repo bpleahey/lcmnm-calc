@@ -17,7 +17,7 @@ import {
   gen,
   getAbilitiesForSpecies,
   getBaseStatTotal,
-  getCalculatedStats,
+  getDisplayedStatsForState,
   getEffectiveMixedState,
   getSpeciesTypes,
   pokemonStateFromSet,
@@ -69,7 +69,7 @@ export function PokemonPanel({
     : itemMixed?.ability && (canMega || isAutoTransform)
       ? [itemMixed.ability, ...abilities.filter((a) => a !== itemMixed.ability)]
       : abilities;
-  const stats = getCalculatedStats(state);
+  const { stats, itemModified } = getDisplayedStatsForState(state);
   const maxHp = Math.max(1, stats.hp);
   const bst = getBaseStatTotal(state);
   const types = getSpeciesTypes(state);
@@ -354,6 +354,7 @@ export function PokemonPanel({
               label={STAT_LABELS[stat]}
               state={state}
               finalStat={stats[stat]}
+              itemModified={Boolean(itemModified[stat])}
               evTotal={evTotal}
               onEvChange={setEv}
               onIvChange={setIv}
