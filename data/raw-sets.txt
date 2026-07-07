@@ -1,0 +1,534 @@
+Wall (Shellos) @ Chimechite  
+Ability: Storm Drain  
+Level: 5  
+EVs: 228 HP / 132 Def / 100 SpD / 4 Spe  
+Bold Nature  
+IVs: 0 Atk  
+- Stealth Rock  
+- Earth Power  
+- Ice Beam  
+- Recover  
+
+Diancite (Chinchou) @ Diancite  
+Ability: Volt Absorb  
+Level: 5  
+EVs: 52 Def / 228 SpA / 220 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Hydro Pump / Scald  
+- Ice Beam  
+- Volt Switch  
+- Flip Turn / Substitute
+
+Stunky @ Metagrossite  
+Ability: Aftermath  
+Level: 5  
+EVs: 12 HP / 252 Atk / 244 Spe  
+Jolly Nature  
+- Poison Jab  
+- Knock Off  
+- Sucker Punch  
+- Temper Flare  
+
+Wallbreaker (Drifloon) @ Red Orb  
+Ability: Aftermath  
+Level: 5  
+EVs: 116 HP / 196 SpA / 196 Spe  
+Modest Nature  
+IVs: 0 Atk  
+- Weather Ball  
+- Shadow Ball  
+- Thunderbolt  
+- Substitute  
+
+Vullaby (F) @ Sablenite  
+Ability: Overcoat  
+Level: 5  
+Tera Type: Dark  
+EVs: 196 HP / 156 Def / 156 SpD  
+Relaxed Nature  
+IVs: 0 Spe  
+- Knock Off  
+- Brave Bird / Defog
+- U-turn / Defog
+- Roost
+
+Snowshrew (Sandshrew-Alola) @ Scizorite  
+Ability: Slush Rush  
+Level: 5  
+Tera Type: Fairy  
+EVs: 36 HP / 236 Atk / 36 Def / 196 Spe  
+Jolly Nature  
+- Triple Axel  
+- Earthquake  
+- Rapid Spin / Stealth Rock
+- Ice Shard / Stealth Rock / Swords Dance
+
+Tentacool @ Zeraorite  
+Ability: Clear Body  
+Level: 5  
+EVs: 36 HP / 76 Def / 156 SpA / 36 SpD / 196 Spe  
+Timid Nature  
+- Sludge Bomb  
+- Flip Turn  
+- Rest  
+- Sleep Talk
+
+Grookey @ Lopunnite  
+Ability: Grassy Surge  
+Level: 5  
+Tera Type: Grass  
+EVs: 236 Atk / 36 Def / 236 Spe  
+Jolly Nature  
+- Wood Hammer  
+- Grassy Glide  
+- Drain Punch  
+- U-turn
+
+Defensive Pivot (Larvesta) @ Eviolite  
+Ability: Flame Body  
+Level: 5  
+Tera Type: Fairy  
+EVs: 76 HP / 236 Def / 76 SpD / 116 Spe  
+Impish Nature  
+- Flare Blitz  
+- U-turn  
+- Will-O-Wisp  
+- Morning Sun
+
+Wingull @ Diancite  
+Ability: Keen Eye  
+Level: 5  
+EVs: 36 Def / 236 SpA / 236 Spe  
+Modest Nature  
+IVs: 19 HP / 0 Atk  
+- Surf  
+- Hurricane  
+- Ice Beam  
+- Substitute
+
+Foongus @ Eviolite  
+Ability: Regenerator  
+Level: 5  
+Tera Type: Water  
+EVs: 124 HP / 156 Def / 156 SpD  
+Bold Nature  
+IVs: 0 Atk  
+- Giga Drain  
+- Sludge Bomb  
+- Spore  
+- Synthesis
+
+Defensive Pivot (Chinchou) @ Eviolite  
+Ability: Volt Absorb  
+Level: 5  
+Tera Type: Flying  
+EVs: 76 HP / 132 Def / 68 SpA / 228 SpD  
+Sassy Nature  
+IVs: 0 Atk / 0 Spe  
+- Scald / Thunderbolt
+- Volt Switch / Flip Turn
+- Rest  
+- Sleep Talk
+
+Defensive (Qwilfish-Hisui) @ Eviolite  
+Ability: Intimidate  
+Level: 5  
+Tera Type: Dark  
+EVs: 76 Def / 156 SpA / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Sludge Bomb  
+- Ice Beam  
+- Mud Shot  
+- Spikes
+
+Wallbreaker (Arrokuda) @ Lopunnite  
+Ability: Swift Swim  
+Level: 5  
+Tera Type: Water  
+EVs: 252 Atk / 28 Def / 228 Spe  
+Jolly Nature  
+- Liquidation  
+- Close Combat  
+- Aqua Jet  
+- Flip Turn
+
+Gligar @ Eviolite  
+Ability: Hyper Cutter  
+Level: 5  
+Tera Type: Ground  
+EVs: 156 HP / 76 Atk / 236 Spe  
+Adamant / Jolly Nature  
+- Dual Wingbeat  
+- High Horsepower  
+- Stealth Rock  
+- U-turn
+
+Offesive Hazard Setter (Glimmet) @ Diancite  
+Ability: Toxic Debris  
+Level: 5  
+Tera Type: Rock  
+EVs: 20 Def / 236 SpA / 36 SpD / 196 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Power Gem  
+- Sludge Wave  
+- Mud Shot  
+- Spikes
+
+Slowpoke @ Eviolite  
+Ability: Regenerator  
+Level: 5  
+Tera Type: Water  
+EVs: 196 HP / 236 Def / 36 SpA / 36 SpD  
+Bold Nature  
+IVs: 0 Atk  
+- Surf  
+- Psychic  
+- Flamethrower / Thunder Wave
+- Slack Off
+
+Pivot (Tadbulb) @ Red Orb  
+Ability: Own Tempo  
+Level: 5  
+EVs: 28 HP / 28 Def / 44 SpA / 156 SpD / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Weather Ball  
+- Volt Switch  
+- Rest  
+- Sleep Talk
+
+Anti Skunk (Toedscool) @ Gyaradosite  
+Ability: Mycelium Might  
+Level: 5  
+Tera Type: Ground  
+EVs: 36 HP / 236 Def / 36 SpD / 196 Spe  
+Timid Nature  
+- Earth Power  
+- Knock Off  
+- Spikes  
+- Spore
+
+Anti-Shrew (Sandygast) @ Chimechite  
+Ability: Water Compaction  
+Level: 5  
+Tera Type: Ghost  
+EVs: 236 HP / 36 Def / 236 SpD  
+Calm Nature  
+IVs: 0 Atk  
+- Stealth Rock  
+- Scorching Sands  
+- Hex  
+- Shore Up
+
+Tinkatink (F) @ Clefablite  
+Ability: Mold Breaker  
+Level: 5  
+EVs: 116 HP / 236 Def / 132 Spe  
+Timid Nature  
+- Stealth Rock  
+- Draining Kiss  
+- Knock Off  
+- Thunder Wave
+
+Salandit @ Diancite  
+Ability: Oblivious  
+Level: 5  
+EVs: 52 HP / 36 Def / 188 SpA / 220 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Sludge Wave  
+- Fire Blast  
+- Will-O-Wisp  
+- Substitute
+
+Choice Scarf (Mienfoo) @ Choice Scarf  
+Ability: Reckless  
+Level: 5  
+EVs: 236 Atk / 36 Def / 236 Spe  
+Jolly Nature  
+- High Jump Kick  
+- Close Combat  
+- Knock Off  
+- U-turn
+
+Sablenite (Munchlax) @ Sablenite  
+Ability: Thick Fat  
+Level: 5  
+EVs: 76 HP / 196 Def / 236 SpD  
+Impish Nature  
+- Body Slam  
+- Fire Blast  
+- Rest  
+- Sleep Talk
+
+Sun Setter (Vulpix) @ Heat Rock  
+Ability: Drought  
+Level: 5  
+EVs: 36 Def / 196 SpA / 236 Spe  
+Timid Nature  
+IVs: 23 HP / 0 Atk  
+- Weather Ball  
+- Will-O-Wisp  
+- Encore  
+- Healing Wish
+
+Sun Sweeper (Bulbasaur) @ Life Orb  
+Ability: Chlorophyll  
+Level: 5  
+EVs: 236 SpA / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Growth  
+- Solar Beam  
+- Sludge Bomb  
+- Weather Ball
+
+Wallbreaker (Finizen) @ Gardevoirite / Altarianite
+Ability: Water Veil  
+Level: 5  
+EVs: 36 Def / 236 SpA / 236 Spe  
+Timid Nature  
+- Surf  
+- Ice Beam  
+- Boomburst  
+- Draining Kiss / Aqua Jet
+
+Eviolite (Mienfoo) @ Eviolite  
+Ability: Regenerator  
+Level: 5  
+Tera Type: Fighting  
+EVs: 196 HP / 36 Def / 196 SpD / 76 Spe  
+Jolly Nature  
+- Fake Out  
+- Knock Off  
+- High Jump Kick  
+- U-turn
+
+Voltorb @ Glalitite  
+Ability: Static  
+Level: 5  
+EVs: 36 HP / 36 Def / 236 SpA / 196 Spe  
+Timid Nature  
+- Thunderbolt  
+- Tera Blast  
+- Volt Switch  
+- Thunder Wave
+
+Dewpider @ Eviolite  
+Ability: Water Bubble  
+Level: 5  
+EVs: 132 HP / 180 Def / 196 SpA  
+Modest Nature  
+IVs: 0 Atk  
+- Hydro Pump  
+- Surf  
+- Ice Beam  
+- Mirror Coat
+
+Murkrow @ Choice Scarf  
+Ability: Super Luck  
+Level: 5  
+Tera Type: Dark  
+EVs: 76 Atk / 236 SpA / 188 Spe  
+Rash Nature  
+- Brave Bird  
+- Dark Pulse  
+- Heat Wave  
+- U-turn  
+
+Mudbray @ Metagrossite  
+Ability: Stamina  
+Level: 5  
+Tera Type: Ground  
+EVs: 36 HP / 196 Atk / 36 Def / 236 Spe  
+Jolly Nature  
+- High Horsepower  
+- Stone Edge  
+- Heavy Slam  
+- Stealth Rock  
+
+Manectite (Koffing) @ Manectite  
+Ability: Levitate  
+Level: 5  
+Tera Type: Poison  
+EVs: 36 HP / 236 Def / 76 SpD / 156 Spe  
+Bold Nature  
+IVs: 0 Atk  
+- Sludge Bomb  
+- Thunderbolt  
+- Pain Split  
+- Will-O-Wisp  
+
+Rain Sweeper (Qwilfish-Hisui) @ Life Orb  
+Ability: Swift Swim  
+Level: 5  
+Tera Type: Dark  
+EVs: 236 Atk / 236 Spe  
+Adamant Nature  
+- Gunk Shot  
+- Liquidation  
+- Crunch  
+- Rain Dance  
+
+Rain Sweeper (Squirtle) @ Swampertite  
+Ability: Torrent  
+Level: 5  
+Tera Type: Water  
+EVs: 4 HP / 212 Atk / 4 SpD / 252 Spe  
+Adamant Nature  
+- Wave Crash  
+- Flip Turn  
+- Aqua Jet  
+- Rain Dance  
+
+Offensive Spinner (Drilbur) @ Pinsirite / Loppunite  
+Ability: Mold Breaker  
+Level: 5  
+EVs: 36 HP / 236 Atk / 212 Spe  
+Jolly Nature  
+- Rapid Spin  
+- Double-Edge  
+- Earthquake  
+- Stealth Rock
+
+Shell Smash (Shellder) @ Altarianite / Pinsirite
+Ability: Shell Armor  
+Level: 5  
+EVs: 236 SpA / 76 SpD / 196 Spe  
+Timid Nature  
+- Shell Smash  
+- Tera Blast  
+- Hydro Pump  
+- Ice Beam  
+
+Axew @ Rusted Sword  
+Ability: Mold Breaker  
+Level: 5  
+Shiny: Yes  
+Tera Type: Dragon  
+EVs: 220 Atk / 36 SpD / 220 Spe  
+Jolly Nature  
+- Dragon Dance  
+- Iron Head  
+- Dragon Claw  
+- Stomping Tantrum  
+
+Quiver Dance (Cutiefly) @ Life Orb  
+Ability: Sweet Veil  
+Level: 5  
+Shiny: Yes  
+Tera Type: Bug  
+EVs: 236 SpA / 244 Spe  
+Timid Nature  
+IVs: 0 HP / 0 Atk  
+- Quiver Dance  
+- Moonblast  
+- Psychic  
+- Draining Kiss  
+
+Skunk Trap (Trapinch) @ Staraptite  
+Ability: Arena Trap  
+Level: 5  
+Shiny: Yes  
+Tera Type: Ground  
+EVs: 236 HP / 196 Atk / 76 Def  
+Adamant Nature  
+- Feint  
+- Superpower  
+- Earthquake  
+- First Impression  
+
+Misdreavus @ Choice Scarf  
+Ability: Levitate  
+Level: 5  
+Shiny: Yes  
+Tera Type: Ghost  
+EVs: 36 HP / 236 SpA / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Shadow Ball  
+- Burning Jealousy  
+- Thunderbolt  
+- Destiny Bond
+
+Offensive (Misdreavus) @ Eviolite
+Ability: Levitate  
+Level: 5  
+Shiny: Yes  
+Tera Type: Ghost  
+EVs: 36 HP / 236 SpA / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Calm Mind
+- Shadow Ball
+- Thunderbolt
+- Dazzling Gleam / Burning Jealousy
+
+Utility (Misdreavus) @ Eviolite  
+Ability: Levitate  
+Level: 5  
+EVs: 36 Def / 156 SpA / 76 SpD / 236 Spe  
+Calm Nature  
+IVs: 0 Atk  
+- Hex
+- Dazzling Gleam  
+- Thunder Wave / Will-o-wisp
+- Pain Split
+
+Mareanie @ Eviolite  
+Ability: Regenerator  
+Level: 5  
+EVs: 196 HP / 180 Def / 12 SpA / 20 SpD / 76 Spe  
+Bold Nature  
+IVs: 0 Atk  
+- Surf  
+- Sludge Bomb  
+- Iron Defense  
+- Recover
+
+Vulpix @ Choice Scarf  
+Ability: Drought  
+Level: 5  
+EVs: 52 HP / 196 SpA / 236 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Fire Blast  
+- Energy Ball  
+- Extrasensory  
+- Healing Wish
+
+Girafarig @ Eviolite  
+Ability: Sap Sipper  
+Level: 5  
+EVs: 76 Def / 196 SpA / 236 Spe  
+Timid Nature  
+- Hyper Voice  
+- Psychic  
+- Double Kick  
+- Thunder Wave
+
+Diglett-Alola @ Metagrossite  
+Ability: Tangling Hair  
+Level: 5  
+EVs: 36 HP / 236 Atk / 36 Def / 4 SpD / 196 Spe  
+Jolly Nature  
+- Swords Dance  
+- Stomping Tantrum  
+- Iron Head  
+- Sucker Punch
+
+AP CSA (Porygon) @ Altarianite  
+Ability: Download  
+Level: 5  
+Shiny: Yes  
+Tera Type: Normal  
+EVs: 76 HP / 236 SpA / 196 Spe  
+Timid Nature  
+IVs: 0 Atk  
+- Tri Attack  
+- Thunder  
+- Shadow Ball  
+- Agility  
