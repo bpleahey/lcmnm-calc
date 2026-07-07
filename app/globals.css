@@ -210,6 +210,42 @@ body {
     color: var(--gold-light);
   }
 
+  .pokemon-header {
+    align-items: flex-start;
+  }
+
+  .pokemon-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .pokemon-name-input {
+    flex: 1 1 auto;
+    min-width: 5.5rem;
+    max-width: 9rem;
+  }
+
+  .mega-toggle {
+    @apply px-1.5 py-0.5 text-[10px] font-semibold;
+    min-width: 2.5rem;
+  }
+
+  .set-variant-row {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .set-variant-btn {
+    @apply max-w-[5.5rem] truncate px-1.5 py-0.5 text-[10px];
+    flex-shrink: 1;
+  }
+
   .field-global-box,
   .field-side-box {
     @apply rounded-xl p-3;

@@ -9,7 +9,7 @@ import { HpControl, SimpleSlider, StatRow } from '@/components/StatSlider';
 import { ALL_LEGAL_SPECIES, getSpeciesFormes, isSpeciesRestricted } from '@/data/legal';
 import { getSuggestedVariants } from '@/data/suggested-sets';
 import { buildItemOptions } from '@/data/mega-stones';
-import { applyMixAndMega } from '@/lib/mixMega';
+import { applyMixAndMega, isMegaStoneItem } from '@/lib/mixMega';
 import {
   calcMoveDamage,
   defaultPokemonState,
@@ -17,6 +17,7 @@ import {
   getAbilitiesForSpecies,
   getBaseStatTotal,
   getCalculatedStats,
+  getEffectiveMixedState,
   getSpeciesTypes,
   pokemonStateFromSet,
   STAT_LABELS,
@@ -58,10 +59,14 @@ export function PokemonPanel({
   );
   const formes = getSpeciesFormes(state.species);
   const abilities = getAbilitiesForSpecies(state.species);
-  const mixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const canMega = Boolean(state.item && isMegaStoneItem(gen, state.item) && !restricted);
+  const mixed = getEffectiveMixedState(state);
+  const itemMixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
   const abilityOptions = mixed?.ability
     ? [mixed.ability, ...abilities.filter((a) => a !== mixed.ability)]
-    : abilities;
+    : itemMixed?.ability && canMega
+      ? [itemMixed.ability, ...abilities.filter((a) => a !== itemMixed.ability)]
+      : abilities;
   const stats = getCalculatedStats(state);
   const maxHp = Math.max(1, stats.hp);
   const bst = getBaseStatTotal(state);
@@ -122,45 +127,68 @@ export function PokemonPanel({
 
   return (
     <section className="panel flex flex-col gap-1.5 p-3">
-      {variants.length > 0 && (
-        <div className="flex shrink-0 flex-wrap justify-end gap-1">
-          {variants.map((v) => (
-            <button
-              key={v.name}
-              type="button"
-              className="toggle-btn text-[10px]"
-              onClick={() => loadSuggested(v.name)}
-            >
-              {v.name}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="flex shrink-0 gap-2">
+      <div className="pokemon-header flex shrink-0 gap-2">
         <PokemonSprite species={state.species} item={state.item} compact />
 
-        <div className="min-w-0 flex-1 space-y-1.5">
-          <Autocomplete
-            value={state.species}
-            options={ALL_LEGAL_SPECIES}
-            strict
-            inputClassName="input-field-compact"
-            onChange={(species) => {
-              const suggested = getSuggestedVariants(species)[0];
-              if (suggested) {
-                onChange(pokemonStateFromSet(suggested));
-                return;
-              }
-              onChange(defaultPokemonState(species));
-            }}
-            placeholder="Pokemon"
-          />
-          <p className="truncate text-[10px] text-gold-light">
+        <div className="min-w-0 flex-1">
+          <div className="pokemon-name-row">
+            <Autocomplete
+              value={state.species}
+              options={ALL_LEGAL_SPECIES}
+              strict
+              className="pokemon-name-input"
+              inputClassName="input-field-compact"
+              onChange={(species) => {
+                const suggested = getSuggestedVariants(species)[0];
+                if (suggested) {
+                  onChange(pokemonStateFromSet(suggested));
+                  return;
+                }
+                onChange(defaultPokemonState(species));
+              }}
+              placeholder="Pokemon"
+            />
+            {canMega && (
+              <button
+                type="button"
+                className={`mega-toggle toggle-btn shrink-0 ${state.megaEvolved ? 'toggle-btn-active' : ''}`}
+                onClick={() => {
+                  const next = !state.megaEvolved;
+                  const nextMixed =
+                    next && state.item
+                      ? applyMixAndMega(gen, state.species, state.item as never)
+                      : null;
+                  update({
+                    megaEvolved: next,
+                    ability: next && nextMixed ? nextMixed.ability : '',
+                  });
+                }}
+                title={state.megaEvolved ? 'Mega evolved' : 'Not mega evolved'}
+              >
+                Mega
+              </button>
+            )}
+            {variants.length > 0 && (
+              <div className="set-variant-row">
+                {variants.map((v) => (
+                  <button
+                    key={v.name}
+                    type="button"
+                    className="set-variant-btn toggle-btn"
+                    onClick={() => loadSuggested(v.name)}
+                    title={v.name}
+                  >
+                    {v.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <p className="truncate text-[10px] leading-tight text-gold-light">
             {types.join(' / ')} · BST {bst}
             {restricted && ' · No Mega'}
           </p>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="mt-1 grid grid-cols-2 gap-1">
             <div className="min-w-0">
               <label className="label">Nature</label>
               <select
@@ -220,10 +248,11 @@ export function PokemonPanel({
             allowEmpty
             listClassName="max-h-56"
             onChange={(item) => {
-              const nextMixed = item ? applyMixAndMega(gen, state.species, item as never) : null;
+              const isStone = Boolean(item && isMegaStoneItem(gen, item));
               update({
                 item,
-                ability: nextMixed?.ability ?? state.ability,
+                megaEvolved: false,
+                ability: isStone ? '' : state.ability,
               });
             }}
             placeholder="Item"

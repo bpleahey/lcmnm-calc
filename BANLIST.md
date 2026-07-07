@@ -8,7 +8,11 @@ Edit the files below when council updates the format:
 - `data/restricted-species.ts`
 - `data/banned-items.ts`
 
-Species dropdowns use Gen 9 Little Cup (`tier: LC`) plus the restricted list below, minus bans.
+Species dropdowns are built from Showdown LC eligibility:
+
+1. **Base pool** — `tier: LC`, plus `tier: NFE` first-stage species with evolutions (Porygon, Shellder, Torchic, Vulpix, Magby, etc.).
+2. **Minus** format species bans (with form exceptions).
+3. **Restricted** — explicit `*species` from the challenge; legal but cannot hold mega stones. Includes Gligar and Qwilfish-Hisui (not in the base pool).
 
 ## Banned species
 

@@ -12,6 +12,14 @@ function toID(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+/**
+ * LCMNM legality:
+ * 1. Base pool — Showdown LC tier, plus NFE-tier first-stage species with evolutions
+ *    (LC-legal in play but not ranked LC: Porygon, Shellder, Torchic, Vulpix, etc.).
+ * 2. Minus format species bans (with form exceptions).
+ * 3. Restricted list — explicit *species from challenge; legal but no mega stones.
+ *    Includes species outside the base pool (Gligar, Qwilfish-Hisui).
+ */
 function speciesIsBanned(name: string): boolean {
   if (banExceptionSet.has(name)) return false;
   if (bannedSet.has(name)) return true;
@@ -20,9 +28,13 @@ function speciesIsBanned(name: string): boolean {
   return bannedSet.has(species.baseSpecies);
 }
 
-function isLcTierSpecies(name: string): boolean {
+function isLcEligibleSpecies(name: string): boolean {
   const species = dex.species.get(toID(name));
-  return species?.tier === 'LC';
+  if (!species?.num || species.num <= 0) return false;
+  if (species.isNonstandard) return false;
+  if (species.tier === 'LC') return true;
+  if (species.tier === 'NFE' && !species.prevo && (species.evos?.length ?? 0) > 0) return true;
+  return false;
 }
 
 export const LCMNM_POKEMON = {
@@ -32,7 +44,7 @@ export const LCMNM_POKEMON = {
 };
 
 for (const species of dex.species.all()) {
-  if (species.tier !== 'LC') continue;
+  if (!isLcEligibleSpecies(species.name)) continue;
   if (speciesIsBanned(species.name)) continue;
   if (restrictedSet.has(species.name)) continue;
   LCMNM_POKEMON.unrestricted.push(species.name);
@@ -40,9 +52,11 @@ for (const species of dex.species.all()) {
 
 LCMNM_POKEMON.unrestricted.sort((a, b) => a.localeCompare(b));
 
+const restrictedLegal = RESTRICTED_SPECIES.filter((name) => !speciesIsBanned(name));
+
 export const ALL_LEGAL_SPECIES = [
   ...LCMNM_POKEMON.unrestricted,
-  ...LCMNM_POKEMON.restricted,
+  ...restrictedLegal,
 ].sort((a, b) => a.localeCompare(b));
 
 export function isSpeciesBanned(name: string): boolean {
@@ -56,7 +70,7 @@ export function isSpeciesRestricted(name: string): boolean {
 export function isSpeciesLegal(name: string): boolean {
   if (speciesIsBanned(name)) return false;
   if (restrictedSet.has(name)) return true;
-  return isLcTierSpecies(name);
+  return isLcEligibleSpecies(name);
 }
 
 export function getSpeciesFormes(name: string): string[] {

@@ -41,6 +41,7 @@ export interface PokemonState {
   species: string;
   item: string;
   ability: string;
+  megaEvolved: boolean;
   nature: NatureName;
   suggestedNatures?: NatureName[];
   evs: Partial<StatsTable>;
@@ -59,6 +60,7 @@ export function defaultPokemonState(species = 'Chinchou'): PokemonState {
     species,
     item: '',
     ability: '',
+    megaEvolved: false,
     nature: 'Serious',
     evs: {},
     ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
@@ -98,11 +100,19 @@ export function defaultSideState(): SideState {
   };
 }
 
+export function getEffectiveMixedState(state: PokemonState) {
+  if (!state.megaEvolved || !state.item) return null;
+  if (!isMegaStoneItem(gen, state.item)) return null;
+  return applyMixAndMega(gen, state.species, state.item as never);
+}
+
 export function pokemonStateFromSet(set: PokemonSet): PokemonState {
+  const isStone = Boolean(set.item && isMegaStoneItem(gen, set.item));
   return {
     species: set.species,
     item: set.item,
-    ability: set.ability,
+    ability: isStone ? '' : set.ability,
+    megaEvolved: false,
     nature: set.nature,
     suggestedNatures: set.suggestedNatures,
     evs: set.evs,
@@ -135,7 +145,7 @@ export function buildPokemon(state: PokemonState): Pokemon {
 
   const species = gen.species.get(toId(state.species));
   const defaultAbility = species?.abilities?.[0] ?? '';
-  const mixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const mixed = getEffectiveMixedState(state);
 
   const overrides = mixed
     ? {
@@ -145,9 +155,7 @@ export function buildPokemon(state: PokemonState): Pokemon {
       }
     : undefined;
 
-  const ability =
-    state.ability ||
-    (mixed?.ability && isMegaStoneItem(gen, state.item) ? mixed.ability : defaultAbility);
+  const ability = state.ability || (mixed?.ability ?? defaultAbility);
 
   const basePokemon = new Pokemon(gen, state.species, {
     level: LC_LEVEL,
@@ -226,7 +234,7 @@ export function getCalculatedStats(state: PokemonState): StatsTable {
 }
 
 export function getBaseStatTotal(state: PokemonState): number {
-  const mixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const mixed = getEffectiveMixedState(state);
   if (mixed) return mixed.bst;
   const species = gen.species.get(toId(state.species));
   if (!species) return 0;
@@ -235,7 +243,7 @@ export function getBaseStatTotal(state: PokemonState): number {
 }
 
 export function getSpeciesTypes(state: PokemonState): string[] {
-  const mixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const mixed = getEffectiveMixedState(state);
   if (mixed) return [...mixed.types];
   const species = gen.species.get(toId(state.species));
   return species ? [...species.types] : [];

@@ -1,8 +1,7 @@
 import { calcStat } from '@smogon/calc';
 import type { NatureName, StatID } from '@/lib/types';
 import { LC_LEVEL, MAX_EV_PER_STAT } from '@/lib/constants';
-import { gen } from '@/lib/calc';
-import { applyMixAndMega } from '@/lib/mixMega';
+import { gen, getEffectiveMixedState } from '@/lib/calc';
 import type { PokemonState } from '@/lib/calc';
 
 function toId(name: string) {
@@ -10,7 +9,7 @@ function toId(name: string) {
 }
 
 function getBaseStat(state: PokemonState, stat: StatID): number {
-  const mixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const mixed = getEffectiveMixedState(state);
   if (mixed) return mixed.baseStats[stat];
   const species = gen.species.get(toId(state.species));
   return species?.baseStats[stat] ?? 0;
