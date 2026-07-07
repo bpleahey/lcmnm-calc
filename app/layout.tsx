@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'LCMNM Damage Calculator',
   description: 'Little Cup Mix and Mega damage calculator for Gen 9',
+  icons: {
+    icon: [{ url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/icon.png', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({
