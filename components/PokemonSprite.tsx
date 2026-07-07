@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   getItemSpriteUrl,
-  getPokemonSpriteCandidates,
+  getPokemonArtworkUrl,
   getSpeciesMonogram,
+  resolvePokemonSpriteCandidates,
 } from '@/lib/speciesLookup';
 
 interface PokemonSpriteProps {
@@ -13,39 +14,29 @@ interface PokemonSpriteProps {
   compact?: boolean;
 }
 
-function imageLoads(url: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const image = new Image();
-    image.onload = () => resolve(true);
-    image.onerror = () => resolve(false);
-    image.src = url;
-  });
-}
-
 export function PokemonSprite({ species, item, compact = false }: PokemonSpriteProps) {
   const [spriteUrl, setSpriteUrl] = useState<string | null>(null);
+  const [spriteCandidates, setSpriteCandidates] = useState<string[]>([]);
   const [itemSpriteUrl, setItemSpriteUrl] = useState<string | null>(null);
-  const spriteCandidates = useMemo(() => getPokemonSpriteCandidates(species), [species]);
 
   useEffect(() => {
     let active = true;
     setSpriteUrl(null);
+    setSpriteCandidates([]);
 
     (async () => {
-      for (const url of spriteCandidates) {
-        if (!active) return;
-        if (await imageLoads(url)) {
-          if (active) setSpriteUrl(url);
-          return;
-        }
-      }
-      if (active) setSpriteUrl('');
+      const candidates = await resolvePokemonSpriteCandidates(species);
+      if (!active) return;
+      setSpriteCandidates(candidates);
+
+      const url = await getPokemonArtworkUrl(species);
+      if (active) setSpriteUrl(url);
     })();
 
     return () => {
       active = false;
     };
-  }, [species, spriteCandidates]);
+  }, [species]);
 
   const tryNextSprite = () => {
     setSpriteUrl((current) => {

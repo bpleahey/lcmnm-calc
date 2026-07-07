@@ -34,26 +34,54 @@ function itemNameToSlug(itemName: string): string {
 }
 
 function getShowdownSlugCandidates(speciesName: string): string[] {
-  const slugs = new Set<string>();
+  const slugs: string[] = [];
+  // Hyphenated name matches Showdown sprite paths (e.g. sandshrew-alola).
+  slugs.push(showdownSlugFromName(speciesName));
   const species = dex.species.get(toId(speciesName));
-  if (species?.id) slugs.add(species.id);
-  slugs.add(showdownSlugFromName(speciesName));
-  slugs.add(normalizeSpeciesName(speciesName));
-  return [...slugs];
+  if (species?.id && !slugs.includes(species.id)) slugs.push(species.id);
+  const normalized = normalizeSpeciesName(speciesName);
+  if (!slugs.includes(normalized)) slugs.push(normalized);
+  return slugs;
+}
+
+function isAlternateForme(speciesName: string): boolean {
+  const species = dex.species.get(toId(speciesName));
+  if (!species) return speciesName.includes('-');
+  return Boolean(
+    species.forme || (species.id !== toId(species.baseSpecies) && species.baseSpecies !== species.name),
+  );
+}
+
+async function getPokeApiArtworkUrl(speciesName: string): Promise<string | null> {
+  const slug = showdownSlugFromName(speciesName);
+
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    const artwork = data.sprites?.other?.['official-artwork']?.front_default as string | undefined;
+    return artwork ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function getPokemonSpriteCandidates(speciesName: string): string[] {
   const urls: string[] = [];
   const species = dex.species.get(toId(speciesName));
+  const isForme = isAlternateForme(speciesName);
+  const showdownSlugs = getShowdownSlugCandidates(speciesName);
 
-  if (species?.num) {
+  for (const slug of showdownSlugs) {
+    urls.push(`https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`);
+    urls.push(`https://play.pokemonshowdown.com/sprites/dex/${slug}.png`);
+  }
+
+  // National dex number artwork is shared across forms — only use for base species.
+  if (!isForme && species?.num) {
     urls.push(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${species.num}.png`,
     );
-  }
-
-  for (const slug of getShowdownSlugCandidates(speciesName)) {
-    urls.push(`https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`);
   }
 
   return [...new Set(urls)];
@@ -81,11 +109,21 @@ function imageLoads(url: string): Promise<boolean> {
   });
 }
 
+export async function resolvePokemonSpriteCandidates(speciesName: string): Promise<string[]> {
+  const candidates = getPokemonSpriteCandidates(speciesName);
+  if (!isAlternateForme(speciesName)) return candidates;
+
+  const formArtwork = await getPokeApiArtworkUrl(speciesName);
+  if (!formArtwork) return candidates;
+
+  return [formArtwork, ...candidates.filter((url) => url !== formArtwork)];
+}
+
 export async function getPokemonArtworkUrl(speciesName: string): Promise<string> {
   const cached = artworkCache.get(speciesName);
   if (cached !== undefined) return cached;
 
-  for (const url of getPokemonSpriteCandidates(speciesName)) {
+  for (const url of await resolvePokemonSpriteCandidates(speciesName)) {
     if (await imageLoads(url)) {
       artworkCache.set(speciesName, url);
       return url;
