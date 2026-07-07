@@ -12,7 +12,7 @@ import {
 } from '@/lib/statSteps';
 import type { PokemonState } from '@/lib/calc';
 
-const BOOST_OPTIONS = Array.from({ length: 13 }, (_, i) => i - 6);
+const BOOST_OPTIONS = Array.from({ length: 13 }, (_, i) => 6 - i);
 
 function boostLabel(value: number): string {
   if (value === 0) return '--';

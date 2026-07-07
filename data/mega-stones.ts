@@ -1,6 +1,6 @@
 import { Generations } from '@smogon/calc';
 import type { Generation, ItemName } from '@smogon/calc/dist/data/interface';
-import { BANNED_ITEMS, FORMAT_LEGAL_EXTRAS } from '@/data/banned-items';
+import { BANNED_ITEMS, FORMAT_LEGAL_EXTRAS, OGRERON_MASKS } from '@/data/banned-items';
 import { isMegaStoneItem } from '@/lib/mixMega';
 import { OPTION_DIVIDER } from '@/lib/learnset';
 
@@ -84,6 +84,12 @@ export function getAvailableItems(
     }
   }
 
+  for (const mask of OGRERON_MASKS) {
+    if (!bannedSet.has(mask) && !items.includes(mask)) {
+      items.push(mask);
+    }
+  }
+
   if (isRestricted) {
     return items.filter((name) => !isMegaStoneItem(gen, name));
   }
@@ -103,6 +109,10 @@ export function getSuggestedItems(gen: Generation, isRestricted: boolean): strin
 
     for (const extra of FORMAT_LEGAL_EXTRAS) {
       if (!bannedSet.has(extra)) suggested.push(extra);
+    }
+
+    for (const mask of OGRERON_MASKS) {
+      if (!bannedSet.has(mask)) suggested.push(mask);
     }
   }
 

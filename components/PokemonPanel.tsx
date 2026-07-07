@@ -9,7 +9,8 @@ import { HpControl, SimpleSlider, StatRow } from '@/components/StatSlider';
 import { ALL_LEGAL_SPECIES, getSpeciesFormes, isSpeciesRestricted } from '@/data/legal';
 import { getSuggestedVariants } from '@/data/suggested-sets';
 import { buildItemOptions } from '@/data/mega-stones';
-import { applyMixAndMega, isMegaStoneItem } from '@/lib/mixMega';
+import { applyMixAndMega, isAutoTransformItem, isToggleMegaStone } from '@/lib/mixMega';
+import { mergeSwitchInBoosts } from '@/lib/displayStats';
 import {
   calcMoveDamage,
   defaultPokemonState,
@@ -59,12 +60,13 @@ export function PokemonPanel({
   );
   const formes = getSpeciesFormes(state.species);
   const abilities = getAbilitiesForSpecies(state.species);
-  const canMega = Boolean(state.item && isMegaStoneItem(gen, state.item) && !restricted);
+  const canMega = Boolean(state.item && isToggleMegaStone(gen, state.item) && !restricted);
+  const isAutoTransform = Boolean(state.item && isAutoTransformItem(state.item));
   const mixed = getEffectiveMixedState(state);
   const itemMixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
   const abilityOptions = mixed?.ability
     ? [mixed.ability, ...abilities.filter((a) => a !== mixed.ability)]
-    : itemMixed?.ability && canMega
+    : itemMixed?.ability && (canMega || isAutoTransform)
       ? [itemMixed.ability, ...abilities.filter((a) => a !== itemMixed.ability)]
       : abilities;
   const stats = getCalculatedStats(state);
@@ -248,11 +250,26 @@ export function PokemonPanel({
             allowEmpty
             listClassName="max-h-56"
             onChange={(item) => {
-              const isStone = Boolean(item && isMegaStoneItem(gen, item));
+              const isToggleStone = Boolean(item && isToggleMegaStone(gen, item));
+              const isAuto = Boolean(item && isAutoTransformItem(item));
+              const mixed = item ? applyMixAndMega(gen, state.species, item as never) : null;
+              const ability = !item
+                ? ''
+                : isAuto && mixed
+                  ? mixed.ability
+                  : isToggleStone
+                    ? ''
+                    : state.ability;
               update({
                 item,
                 megaEvolved: false,
-                ability: isStone ? '' : state.ability,
+                ability,
+                boosts: item
+                  ? mergeSwitchInBoosts(
+                      isAuto || isToggleStone ? {} : state.boosts,
+                      ability || mixed?.ability || '',
+                    )
+                  : {},
               });
             }}
             placeholder="Item"

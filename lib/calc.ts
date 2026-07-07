@@ -8,8 +8,9 @@ import {
 import type { Generation } from '@smogon/calc/dist/data/interface';
 import type { NatureName, StatID, StatusName, StatsTable } from '@/lib/types';
 import { LC_LEVEL } from '@/lib/constants';
-import { applyMixAndMega, isMegaStoneItem } from '@/lib/mixMega';
+import { applyMixAndMega, isAutoTransformItem, isToggleMegaStone } from '@/lib/mixMega';
 import { formatDamageRollDisplay, type DamageRollLine } from '@/lib/rolls';
+import { getDisplayedStats, mergeSwitchInBoosts } from '@/lib/displayStats';
 import type { PokemonSet } from '@/data/suggested-sets';
 
 export const gen: Generation = Generations.get(9);
@@ -101,17 +102,25 @@ export function defaultSideState(): SideState {
 }
 
 export function getEffectiveMixedState(state: PokemonState) {
-  if (!state.megaEvolved || !state.item) return null;
-  if (!isMegaStoneItem(gen, state.item)) return null;
-  return applyMixAndMega(gen, state.species, state.item as never);
+  if (!state.item) return null;
+  if (isAutoTransformItem(state.item)) {
+    return applyMixAndMega(gen, state.species, state.item as never);
+  }
+  if (state.megaEvolved && isToggleMegaStone(gen, state.item)) {
+    return applyMixAndMega(gen, state.species, state.item as never);
+  }
+  return null;
 }
 
 export function pokemonStateFromSet(set: PokemonSet): PokemonState {
-  const isStone = Boolean(set.item && isMegaStoneItem(gen, set.item));
+  const isToggleStone = Boolean(set.item && isToggleMegaStone(gen, set.item));
+  const isAuto = Boolean(set.item && isAutoTransformItem(set.item));
+  const mixed = set.item ? applyMixAndMega(gen, set.species, set.item as never) : null;
+  const ability = isToggleStone ? '' : isAuto && mixed ? mixed.ability : set.ability;
   return {
     species: set.species,
     item: set.item,
-    ability: isStone ? '' : set.ability,
+    ability,
     megaEvolved: false,
     nature: set.nature,
     suggestedNatures: set.suggestedNatures,
@@ -120,7 +129,7 @@ export function pokemonStateFromSet(set: PokemonSet): PokemonState {
     moves: set.moves,
     moveSlotOptions: set.moveSlotOptions,
     status: set.status,
-    boosts: set.boosts,
+    boosts: mergeSwitchInBoosts(set.boosts, ability),
     gender: set.gender,
     hpPercent: set.hpPercent,
     toxicCounter: set.toxicCounter ?? 1,
@@ -227,7 +236,7 @@ export function getCalculatedStats(state: PokemonState): StatsTable {
   if (!isResolvableSpecies(state.species)) return EMPTY_STATS;
   try {
     const pokemon = buildPokemon(state);
-    return { ...pokemon.stats };
+    return getDisplayedStats(gen, pokemon, state);
   } catch {
     return EMPTY_STATS;
   }

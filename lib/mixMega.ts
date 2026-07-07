@@ -1,6 +1,13 @@
 import type { Generation, ItemName, Specie, SpeciesName, StatID, StatsTable, TypeName } from '@smogon/calc/dist/data/interface';
+import { FORMAT_LEGAL_EXTRAS, OGRERON_MASKS } from '@/data/banned-items';
 
 type SparseStats = Partial<StatsTable>;
+
+/** Items that force a forme change on switch-in without a mega-evolution toggle. */
+const AUTO_TRANSFORM_ITEMS = new Set<string>([
+  ...FORMAT_LEGAL_EXTRAS.filter((item) => item !== 'Malamarite'),
+  ...OGRERON_MASKS,
+]);
 
 interface FormeDeltas {
   ability: string;
@@ -35,6 +42,9 @@ function getForcedForme(gen: Generation, itemName?: string): SpeciesName | null 
   if (itemName === 'Blue Orb') return 'Kyogre-Primal' as SpeciesName;
   if (itemName === 'Rusted Sword') return 'Zacian-Crowned' as SpeciesName;
   if (itemName === 'Rusted Shield') return 'Zamazenta-Crowned' as SpeciesName;
+  if (itemName === 'Hearthflame Mask') return 'Ogerpon-Hearthflame' as SpeciesName;
+  if (itemName === 'Wellspring Mask') return 'Ogerpon-Wellspring' as SpeciesName;
+  if (itemName === 'Cornerstone Mask') return 'Ogerpon-Cornerstone' as SpeciesName;
 
   if (item.megaStone) {
     return Object.values(item.megaStone)[0] as SpeciesName;
@@ -137,8 +147,19 @@ export function applyMixAndMega(
   const formeChangeSpecies = gen.species.get(toId(forcedForme) as never);
   if (!formeChangeSpecies) return null;
 
+  if (isAutoTransformItem(itemName as string)) {
+    return {
+      baseStats: { ...formeChangeSpecies.baseStats } as StatsTable,
+      types: [...formeChangeSpecies.types] as [TypeName] | [TypeName, TypeName],
+      abilities: { 0: formeChangeSpecies.abilities?.[0] ?? '' },
+      ability: formeChangeSpecies.abilities?.[0] ?? '',
+      bst: sumStats(formeChangeSpecies.baseStats),
+    };
+  }
+
   if (
-    formeChangeSpecies.baseSpecies === originalSpecies.baseSpecies &&
+    (formeChangeSpecies.baseSpecies === originalSpecies.baseSpecies ||
+      formeChangeSpecies.baseSpecies === originalSpecies.name) &&
     !formeChangeSpecies.name.includes('-Mega') &&
     !formeChangeSpecies.name.includes('-Primal')
   ) {
@@ -174,14 +195,16 @@ function sumStats(stats: StatsTable | Readonly<StatsTable>): number {
   return stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
 }
 
-export function isMegaStoneItem(gen: Generation, itemName: string): boolean {
+export function isAutoTransformItem(itemName: string): boolean {
+  return AUTO_TRANSFORM_ITEMS.has(itemName);
+}
+
+export function isToggleMegaStone(gen: Generation, itemName: string): boolean {
   const item = gen.items.get(toId(itemName) as never);
   if (!item) return false;
-  return Boolean(
-    item.megaStone ||
-      itemName === 'Red Orb' ||
-      itemName === 'Blue Orb' ||
-      itemName === 'Rusted Sword' ||
-      itemName === 'Rusted Shield',
-  );
+  return Boolean(item.megaStone);
+}
+
+export function isMegaStoneItem(gen: Generation, itemName: string): boolean {
+  return isToggleMegaStone(gen, itemName) || isAutoTransformItem(itemName);
 }

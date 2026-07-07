@@ -849,7 +849,7 @@ export const SUGGESTED_SETS: SuggestedSetEntry[] = [
         ivs: {},
         moves: ['Dragon Dance', 'Iron Head', 'Dragon Claw', 'Stomping Tantrum'] as [string, string, string, string],
         status: '',
-        boosts: {},
+        boosts: { atk: 1 },
         gender: 'M',
         hpPercent: 100,
       },

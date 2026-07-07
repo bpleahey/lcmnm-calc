@@ -25,3 +25,10 @@ export const FORMAT_LEGAL_EXTRAS = [
   'Rusted Shield',
   'Malamarite',
 ] as const;
+
+/** Ogerpon masks — auto-apply forme on switch-in. */
+export const OGRERON_MASKS = [
+  'Hearthflame Mask',
+  'Wellspring Mask',
+  'Cornerstone Mask',
+] as const;
