@@ -15,10 +15,9 @@ import {
   calcMoveDamage,
   defaultPokemonState,
   gen,
-  getAbilitiesForSpecies,
+  getAbilityOptionsForState,
   getBaseStatTotal,
   getDisplayedStatsForState,
-  getEffectiveMixedState,
   getSpeciesTypes,
   pokemonStateFromSet,
   STAT_LABELS,
@@ -59,16 +58,8 @@ export function PokemonPanel({
     [state.species, restricted],
   );
   const formes = getSpeciesFormes(state.species);
-  const abilities = getAbilitiesForSpecies(state.species);
   const canMega = Boolean(state.item && isToggleMegaStone(gen, state.item) && !restricted);
-  const isAutoTransform = Boolean(state.item && isAutoTransformItem(state.item));
-  const mixed = getEffectiveMixedState(state);
-  const itemMixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
-  const abilityOptions = mixed?.ability
-    ? [mixed.ability, ...abilities.filter((a) => a !== mixed.ability)]
-    : itemMixed?.ability && (canMega || isAutoTransform)
-      ? [itemMixed.ability, ...abilities.filter((a) => a !== itemMixed.ability)]
-      : abilities;
+  const abilityOptions = getAbilityOptionsForState(state);
   const { stats, itemModified } = getDisplayedStatsForState(state);
   const maxHp = Math.max(1, stats.hp);
   const bst = getBaseStatTotal(state);

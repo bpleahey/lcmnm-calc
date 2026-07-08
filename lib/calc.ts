@@ -5,6 +5,7 @@ import {
   Pokemon,
   Field,
 } from '@smogon/calc';
+import { Dex } from '@pkmn/dex';
 import type { Generation } from '@smogon/calc/dist/data/interface';
 import type { NatureName, StatID, StatusName, StatsTable } from '@/lib/types';
 import { LC_LEVEL } from '@/lib/constants';
@@ -14,6 +15,7 @@ import { getDisplayedStats, mergeSwitchInBoosts, type DisplayedStatsResult } fro
 import type { PokemonSet } from '@/data/suggested-sets';
 
 export const gen: Generation = Generations.get(9);
+const dex = Dex.forGen(9);
 
 export interface FieldState {
   weather: string;
@@ -279,9 +281,28 @@ export function getAllMoves(): string[] {
 }
 
 export function getAbilitiesForSpecies(speciesName: string): string[] {
-  const species = gen.species.get(toId(speciesName));
+  const species = dex.species.get(toId(speciesName));
   if (!species?.abilities) return [];
   return Object.values(species.abilities).filter(Boolean) as string[];
+}
+
+function mergeAbilityOptions(primary: string | undefined, base: string[]): string[] {
+  if (!primary) return base;
+  return [primary, ...base.filter((ability) => ability !== primary)];
+}
+
+export function getAbilityOptionsForState(state: PokemonState): string[] {
+  const base = getAbilitiesForSpecies(state.species);
+  const mixed = getEffectiveMixedState(state);
+  if (mixed?.ability) return mergeAbilityOptions(mixed.ability, base);
+
+  const itemMixed = state.item ? applyMixAndMega(gen, state.species, state.item as never) : null;
+  const canMega = Boolean(state.item && isToggleMegaStone(gen, state.item));
+  const isAutoTransform = Boolean(state.item && isAutoTransformItem(state.item));
+  if (itemMixed?.ability && (canMega || isAutoTransform)) {
+    return mergeAbilityOptions(itemMixed.ability, base);
+  }
+  return base;
 }
 
 export const STAT_LABELS: Record<StatID, string> = {

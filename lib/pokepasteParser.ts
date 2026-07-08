@@ -1,7 +1,7 @@
 import type { NatureName, StatID, StatsTable } from '@/lib/types';
 import type { PokemonSet } from '@/data/suggested-sets';
 import { applyMixAndMega, isMegaStoneItem } from '@/lib/mixMega';
-import { gen } from '@/lib/calc';
+import { gen, getAbilitiesForSpecies } from '@/lib/calc';
 
 const STAT_ALIASES: Record<string, StatID> = {
   hp: 'hp',
@@ -119,8 +119,8 @@ function resolveAbility(species: string, item: string, pastedAbility?: string): 
     if (mixed?.ability) return mixed.ability;
   }
   if (pastedAbility) return pastedAbility;
-  const sp = gen.species.get(species.toLowerCase().replace(/[^a-z0-9]/g, '') as never);
-  return sp?.abilities?.[0] ?? '';
+  const abilities = getAbilitiesForSpecies(species);
+  return abilities[0] ?? '';
 }
 
 /** Parse a single Showdown / Pokepaste Pokémon block into a PokemonSet. */
